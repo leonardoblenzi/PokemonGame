@@ -1,11 +1,15 @@
 #definir classe com letras maiusculas para manter padrão
+import random
 class Pokemon:
     #construtor
     #argumento nome é opcional, se nao for passado nome recebe especie do pokemon
-    #argumento level é opcioval se nao for passado vai ser 1
-    def __init__(self, especie, level = 1, nome=None):
+    #se argumento level não for definido vai ser aleatorio
+    def __init__(self, especie, level = None, nome=None):
         self.especie = especie
-        self.level = level
+        if level:
+            self.level = level
+        else:
+            self.level = random.randint(1,100)
 
         #se tiver nome recebe o nome, senão o nome vai ser a especie do pokemon
         if nome:
@@ -39,8 +43,3 @@ class PokemonAgua(Pokemon):
         print('{} lançou um jato de agua em {}!'.format(self, alvo))
 
 
-meu_pokemon = PokemonFogo('charmander')
-pokemon_inimigo = PokemonAgua('squirtle')
-
-meu_pokemon.atacar(pokemon_inimigo)
-print(meu_pokemon.tipo)
