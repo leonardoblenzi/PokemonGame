@@ -70,14 +70,3 @@ class Inimigo(Pessoa):
 
 
 
-meu_pokemon = PokemonFogo('charmander')
-#instanciando player e a lista de pokemons do player
-#lista de objetos pokemons
-eu = Player(pokemons=[meu_pokemon])
-pokemon_selvagem = PokemonFogo('charizard')
-eu.capturar(pokemon_selvagem)
-eu.mostrar_pokemon()
-
-meu_inimigo = Inimigo()
-
-meu_inimigo.mostrar_pokemon()
