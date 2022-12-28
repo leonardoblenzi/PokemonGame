@@ -56,6 +56,7 @@ class Pessoa:
     #metodo batalha, necessario passar o inimigo/pessoa/alvo
     def batalhar(self, pessoa):
         print('{} iniciou uma batalha com {}!'.format(self, pessoa))
+        inimigo = pessoa
         #mostrando pokemons do inimigo
         pessoa.mostrar_pokemon()
         #inimigo escolhe pokemon primeiro
@@ -71,13 +72,13 @@ class Pessoa:
                 #se vitoria retornar true vai parar
                 vitoria = meu_pokemon.atacar(pokemon_inimigo)
                 if vitoria:
-                    print('{} ganhou a batalha!'.format(self))
+                    print('{} ganhou a batalha com {}!'.format(self, meu_pokemon))
                     self.ganhar_dinheiro(pokemon_inimigo.level * 15)
                     break
 
                 vitoria_inimiga = pokemon_inimigo.atacar(meu_pokemon)
                 if vitoria_inimiga:
-                    print('{} ganhou a batalha!'.format(pokemon_inimigo))
+                    print('{} ganhou a batalha com {}!'.format(inimigo, pokemon_inimigo))
                     break
 
         else:
@@ -150,16 +151,23 @@ class Inimigo(Pessoa):
     tipo = 'Inimigo'
     #passando nome e pokemons vazios para caso precise criar um inimigo especifico
     #se não forem definidos os valores serão nome e pokemons aleatorios
-    def __init__(self, nome = None, pokemons = []):
+    def __init__(self, nome = None, pokemons = None):
         #se pokemons não tiver valor definido vão ser passados pokemons aleatorios
         if not pokemons:
+            pokemons_aleatorios = []
             #vai adicionar pokemons aleatorios para o inimigo (de 1 à 6)
             #inimigo vai ter no minimo 1 e no maximo 6 pokemons
             for i in range(random.randint(1, 6)):
-                pokemons.append(random.choice(POKEMONS))
+                pokemons_aleatorios.append(random.choice(POKEMONS))
 
-        #chamando construtor da classe pai ao final para instanciar os valores
-        super().__init__(nome=nome, pokemons=pokemons)
+            #chamando construtor da classe pai ao final para instanciar os valores
+            super().__init__(nome=nome, pokemons=pokemons_aleatorios)
+
+
+        #se tiver sido passado os pokemons vai instanciar normalmente
+        else:
+            super().__init__(nome=nome, pokemons=pokemons)
+
 
 
 
