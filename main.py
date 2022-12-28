@@ -28,4 +28,8 @@ def escolher_pokemon_inicial(player):
             print('Escolha inválida')
 
 player = Player()
-escolher_pokemon_inicial(player)
+player.capturar(PokemonEletrico('Pikachu',level=1))
+#definindo inimigo
+#inimigo1 = Inimigo(nome='Gary', pokemons=[PokemonAgua('Squirtle', level=1)])
+
+player.explorar()

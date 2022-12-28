@@ -20,13 +20,16 @@ class Pessoa:
     #construtor
     #nome é opcional, se não for passado vai ser um nome aleatorio
     #pokemons vao ser uma lista
-    def __init__(self, nome = None, pokemons = []):
+    #dinheiro é opcional, se não for passando vai ser 100
+    def __init__(self, nome = None, pokemons = [], dinheiro = 100):
         if nome:
             self.nome = nome
         else:
             self.nome = random.choice(NOMES)
 
         self.pokemons = pokemons
+
+        self.dinheiro = dinheiro
 
     def __str__(self):
         return self.nome
@@ -35,10 +38,60 @@ class Pessoa:
     def mostrar_pokemon(self):
         if self.pokemons:
             print('Pokemons de {}:'.format(self))
-            for pokemon in self.pokemons:
-                print(pokemon)
+            #usando metodo enumerate para printar o indice da lista junto com os valores
+            for index, pokemon in enumerate(self.pokemons):
+                print('{} - {}'.format(index, pokemon))
         else:
             print('{} não tem nenhum pokemon!'.format(self))
+
+    #metodo para ganhar dinheiro apos batalhas
+    def ganhar_dinheiro(self, quantidade):
+        self.dinheiro += quantidade
+        print('Você ganhou $ {}!'.format(quantidade))
+        self.mostrar_dinheiro()
+    #metodo para mostrar quanto dinheiro personagem possui
+    def mostrar_dinheiro(self):
+        print('Você possui $ {}!'.format(self.dinheiro))
+
+    #metodo batalha, necessario passar o inimigo/pessoa/alvo
+    def batalhar(self, pessoa):
+        print('{} iniciou uma batalha com {}!'.format(self, pessoa))
+        #mostrando pokemons do inimigo
+        pessoa.mostrar_pokemon()
+        #inimigo escolhe pokemon primeiro
+        pokemon_inimigo = pessoa.escolher_pokemon()
+
+        #player escolhe pokemon
+        meu_pokemon = self.escolher_pokemon()
+
+        #verificando se os dois tem pokemons para iniciar a luta
+        if meu_pokemon and pokemon_inimigo:
+            while True:
+                #começo da batalha
+                #se vitoria retornar true vai parar
+                vitoria = meu_pokemon.atacar(pokemon_inimigo)
+                if vitoria:
+                    print('{} ganhou a batalha!'.format(self))
+                    self.ganhar_dinheiro(pokemon_inimigo.level * 15)
+                    break
+
+                vitoria_inimiga = pokemon_inimigo.atacar(meu_pokemon)
+                if vitoria_inimiga:
+                    print('{} ganhou a batalha!'.format(pokemon_inimigo))
+                    break
+
+        else:
+            print('Essa batalha não pode ocorrer!')
+
+
+    def escolher_pokemon(self):
+        #verificando se tem pokemon na lista, se tiver vai escolher um aleatorio entre os valores
+        if self.pokemons:
+            pokemon_escolhido = random.choice(self.pokemons)
+            print('{}: escolheu {}!'.format(self, pokemon_escolhido))
+            return pokemon_escolhido
+        else:
+            print('Erro: Esse jogador não possui nenhum Pokemon para ser escolhido')
 
 #classe player, filho de pessoa
 class Player(Pessoa):
@@ -46,7 +99,50 @@ class Player(Pessoa):
     #funcao capturar pokemon, adiciona pokemon à lista de pokemons do player
     def capturar(self, pokemon):
         self.pokemons.append(pokemon)
-        print('{} capturou {}'.format(self, pokemon))
+        print('{} capturou {}!'.format(self, pokemon))
+
+    #metodo para escolher pokemon na batalha
+    def escolher_pokemon(self):
+        self.mostrar_pokemon()
+        #verficando se tem pokemons na lista
+        if self.pokemons:
+            #enquanto nao escolher pokemon valido nao sai dessa função
+            while True:
+                escolha = input('Escolha seu Pokemon: ')
+                try:
+                    #convertendo string para int
+                    escolha = int(escolha)
+                    #passando valor do indice escolhido para a variavel
+                    pokemon_escolhido = self.pokemons[escolha]
+                    #ao dar o return o while é finalizado
+                    print('{}: {} eu escolho você!'.format(self, pokemon_escolhido))
+                    return pokemon_escolhido
+                except:
+                    print('Escolha inválida')
+        else:
+            print('Erro: Esse jogador não possui nenhum Pokemon para ser escolhido')
+
+    #função explorar
+    def explorar(self):
+        #chance de enconcontrar pokemons pelo caminho (30% de chances)
+        if random.random() <= 0.3:
+            #gerando pokemon aleatorio
+            pokemon = random.choice(POKEMONS)
+            print('Um pokemon selvagem apareceu: {}' .format(pokemon))
+            #podemos capturar o pokemon
+            escolha = input('Deseja capturar pokemon ? (s/n): ')
+            if escolha == 's':
+                #definindo chance aleatoria de capturar o pokemon(50% de chance)
+                if random.random() >= 0.5:
+                    self.capturar(pokemon)
+                else:
+                    print('{} fugiu!'.format(pokemon))
+            else:
+                print('Ok, boa viagem!')
+
+        else:
+            print('Essa exploração não deu em nada')
+
 
 
 #classe inimigo, filho de pessoa
@@ -64,6 +160,8 @@ class Inimigo(Pessoa):
 
         #chamando construtor da classe pai ao final para instanciar os valores
         super().__init__(nome=nome, pokemons=pokemons)
+
+
 
 
 
